@@ -1,0 +1,53 @@
+scalar GraphQlDateType
+
+enum Title {
+  Employee
+  Manager
+  Director
+  VP
+}
+
+enum Department {
+  IT
+  Marketing
+  HR
+  Engineering
+}
+
+enum EmployeeType {
+  FullTime
+  PartTime
+  Contract
+  Seasonal
+}
+
+type Employee {
+  _id: ID
+  firstName: String
+  lastName: String
+  age: Int
+  dateOfJoining: GraphQlDateType
+  title: Title
+  department: Department
+  employeeType: EmployeeType
+  currentStatus: Boolean
+}
+
+input EmployeeAdd {
+  firstName: String
+  lastName: String
+  age: Int
+  dateOfJoining: GraphQlDateType
+  title: Title
+  department: Department
+  employeeType: EmployeeType
+  currentStatus: Boolean = true
+}
+
+type Query {
+  employeeList: [Employee]
+}
+
+type Mutation {
+  createEmployee(employee: EmployeeAdd): Employee
+}
