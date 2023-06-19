@@ -34,13 +34,13 @@ type Employee {
 }
 
 input EmployeeAdd {
-  firstName: String
-  lastName: String
-  age: Int
-  dateOfJoining: GraphQlDateType
-  title: Title
-  department: Department
-  employeeType: EmployeeType
+  firstName: String!
+  lastName: String!
+  age: Int!
+  dateOfJoining: GraphQlDateType!
+  title: Title!
+  department: Department!
+  employeeType: EmployeeType!
   currentStatus: Boolean = true
 }
 

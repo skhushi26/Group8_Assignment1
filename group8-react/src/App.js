@@ -1,3 +1,13 @@
+/**
+ * Authors:  Khushali Shah
+ *          Abhi Patel
+ *          Meet Jani
+ *          Gurpreet Singh
+ *
+ * Group 8 - React App
+ * Assignment 1 - PROG8730-23S-Sec8-Advanced Full-Stack Programming
+ */
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import EmployeeDirectory from "./components/EmployeeDirectory";
