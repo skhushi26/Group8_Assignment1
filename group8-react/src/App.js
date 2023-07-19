@@ -10,14 +10,22 @@
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import EmployeeDirectory from "./components/EmployeeDirectory";
+// import EmployeeDirectory from "./components/EmployeeDirectory";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "./components/Navigation";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import EmployeeTable from "./components/EmployeeTable";
+import EmployeeCreate from "./components/EmployeeCreate";
+import Routing from "./components/Router/Routing";
+// import Routing from "./components/Router/Routing";
 
 function App() {
   return (
     <div className="App">
-      <EmployeeDirectory />
+      <Routing />
+
+      {/* <EmployeeDirectory /> */}
 
       <ToastContainer
         position="bottom-right"

@@ -12,55 +12,55 @@ class EmployeeDirectory extends Component {
     };
   }
 
-  async loadData() {
-    try {
-      if (this.state.employees.length > 0) {
-        return;
-      }
-      const query = `
-        query {
-          employeeList {
-            _id
-            firstName
-            lastName
-            age
-            dateOfJoining
-            title
-            department
-            employeeType
-            currentStatus
-          }
-        }
-      `;
+  // async loadData() {
+  //   try {
+  //     if (this.state.employees.length > 0) {
+  //       return;
+  //     }
+  //     const query = `
+  //       query {
+  //         employeeList {
+  //           _id
+  //           firstName
+  //           lastName
+  //           age
+  //           dateOfJoining
+  //           title
+  //           department
+  //           employeeType
+  //           currentStatus
+  //         }
+  //       }
+  //     `;
 
-      const response = await fetch("/graphql", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
-      });
+  //     const response = await fetch("/graphql", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ query }),
+  //     });
 
-      if (!response.ok) {
-        toast.error("Request failed with status: " + response.status);
-        throw new Error("Request failed with status: " + response.status);
-      }
+  //     if (!response.ok) {
+  //       toast.error("Request failed with status: " + response.status);
+  //       throw new Error("Request failed with status: " + response.status);
+  //     }
 
-      const result = await response.json();
+  //     const result = await response.json();
 
-      if (result.data.employeeList.length === 0) {
-        toast.info("Currently there are no employees added");
-      }
+  //     if (result.data.employeeList.length === 0) {
+  //       toast.info("Currently there are no employees added");
+  //     }
 
-      this.setState({ employees: result.data.employeeList });
-      toast.success("Employees found successfully!");
-    } catch (error) {
-      toast.error("Something went wrong in fetching employees!");
-      console.log("Error:", error.message);
-    }
-  }
+  //     this.setState({ employees: result.data.employeeList });
+  //     toast.success("Employees found successfully!");
+  //   } catch (error) {
+  //     toast.error("Something went wrong in fetching employees!");
+  //     console.log("Error:", error.message);
+  //   }
+  // }
 
-  componentWillMount() {
-    this.loadData();
-  }
+  // componentWillMount() {
+  //   this.loadData();
+  // }
 
   employeeAdd = (employee, form) => {
     fetch("/api/employees", {
@@ -96,7 +96,7 @@ class EmployeeDirectory extends Component {
       <Fragment>
         <EmployeeSearch />
         <br />
-        <EmployeeTable employees={this.state.employees} />
+        <EmployeeTable />
         <br />
         <EmployeeCreate employeeAdd={this.employeeAdd} />
       </Fragment>
