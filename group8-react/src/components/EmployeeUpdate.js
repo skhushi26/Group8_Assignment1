@@ -2,6 +2,8 @@ import moment from "moment";
 import { Component } from "react";
 import { Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import withRouter from "./Router/withRouter";
+import { Link } from "react-router-dom";
 
 const TitleOptions = ["Employee", "Manager", "Director", "VP"];
 const DepartmentOptions = ["IT", "Marketing", "HR", "Engineering"];
@@ -28,7 +30,7 @@ class EmployeeUpdate extends Component {
     try {
       const query = `
           query {
-            getEmployeeById(id: "${this.props.match.params.id}") {
+            getEmployeeById(id: "${this?.props?.params.id}") {
               _id
               firstName
               lastName
@@ -54,7 +56,6 @@ class EmployeeUpdate extends Component {
       }
 
       const result = await response.json();
-      console.log("result.data.getEmployeeById ", result.data.getEmployeeById);
       if (!result?.data?.getEmployeeById) toast.warn("Employee not found!");
       else this.setState({ employee: result.data.getEmployeeById });
     } catch (error) {
@@ -64,8 +65,7 @@ class EmployeeUpdate extends Component {
   }
 
   employeeUpdate = (employee, form) => {
-    console.log("this.props.match.params.id", this.props.match.params.id);
-    fetch(`/api/employees/${this.props.match.params.id}`, {
+    fetch(`/api/employees/${this?.props?.params.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -75,10 +75,9 @@ class EmployeeUpdate extends Component {
       .then(async (res) => {
         if (res.ok) {
           const result = await res.json();
-          console.log("result: ", result);
           toast.success(result.message);
           form.reset();
-          this.props.history.push(`/employees/${employee.employeeType}`);
+          this.props.history(`/employees/${employee.employeeType}`);
         } else {
           res.json().catch((err) => {
             toast.error(err.message);
@@ -130,7 +129,8 @@ class EmployeeUpdate extends Component {
     if (!dateOfJoining) {
       errors.dateOfJoining = "Date of joining is required.";
     } else if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOfJoining)) {
-      errors.dateOfJoining = "Date of joining should be in the format 'YYYY-MM-DD'.";
+      errors.dateOfJoining =
+        "Date of joining should be in the format 'YYYY-MM-DD'.";
     } else {
       const parts = dateOfJoining.split("-");
       const year = parseInt(parts[0], 10);
@@ -199,18 +199,18 @@ class EmployeeUpdate extends Component {
         <Form
           name="employeeUpdate"
           onSubmit={this.handleSubmit}
-          className="employee-create-form my-3"
-        >
+          className="employee-create-form my-3">
           <Form.Group controlId="formFirstName">
             <Form.Control
               type="text"
               name="firstName"
               placeholder="FirstName"
               value={this.state.employee.firstName}
-              onChange={this.handleChange}
-              isInvalid={!!errors.firstName}
+              disabled
             />
-            <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.firstName}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -219,10 +219,11 @@ class EmployeeUpdate extends Component {
               name="lastName"
               placeholder="LastName"
               value={this.state.employee.lastName}
-              onChange={this.handleChange}
-              isInvalid={!!errors.lastName}
+              disabled
             />
-            <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.lastName}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -231,21 +232,25 @@ class EmployeeUpdate extends Component {
               name="age"
               placeholder="Age"
               value={this.state.employee.age}
-              onChange={this.handleChange}
-              isInvalid={!!errors.age}
+              disabled
             />
-            <Form.Control.Feedback type="invalid">{errors.age}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.age}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
             <Form.Control
               type="date"
               name="dateOfJoining"
-              onChange={this.handleChange}
-              isInvalid={!!errors.dateOfJoining}
-              value={moment(this.state.employee.dateOfJoining).utc().format("yyyy-MM-DD")}
+              disabled
+              value={moment(this.state.employee.dateOfJoining)
+                .utc()
+                .format("yyyy-MM-DD")}
             />
-            <Form.Control.Feedback type="invalid">{errors.dateOfJoining}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.dateOfJoining}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -253,8 +258,7 @@ class EmployeeUpdate extends Component {
               as="select"
               name="title"
               onChange={this.handleChange}
-              isInvalid={!!errors.title}
-            >
+              isInvalid={!!errors.title}>
               <option value="">Select Title</option>
               {TitleOptions.map((to) => {
                 if (this.state.employee.title === to) {
@@ -268,7 +272,9 @@ class EmployeeUpdate extends Component {
                 }
               })}
             </Form.Control>
-            <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.title}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -276,8 +282,7 @@ class EmployeeUpdate extends Component {
               as="select"
               name="department"
               onChange={this.handleChange}
-              isInvalid={!!errors.department}
-            >
+              isInvalid={!!errors.department}>
               <option value="">Select Department</option>
               {DepartmentOptions.map((d) => {
                 if (this.state.employee.department === d) {
@@ -291,30 +296,20 @@ class EmployeeUpdate extends Component {
                 }
               })}
             </Form.Control>
-            <Form.Control.Feedback type="invalid">{errors.department}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.department}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
-            <Form.Control
-              as="select"
-              name="employeeType"
-              onChange={this.handleChange}
-              isInvalid={!!errors.employeeType}
-            >
-              <option value="">Select Employee Type</option>
-              {EmployeeTypeOptions.map((e) => {
-                if (this.state.employee.employeeType === e) {
-                  return (
-                    <option value={e} selected>
-                      {e}
-                    </option>
-                  );
-                } else {
-                  return <option value={e}>{e}</option>;
-                }
-              })}
+            <Form.Control as="select" name="employeeType" disabled>
+              <option value={this.state.employee.employeeType}>
+                {this.state.employee.employeeType}
+              </option>
             </Form.Control>
-            <Form.Control.Feedback type="invalid">{errors.employeeType}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.employeeType}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group className="employee-radio-btn">
@@ -324,8 +319,7 @@ class EmployeeUpdate extends Component {
               name="currentStatus"
               value={true}
               label="Working"
-              checked={this.state.employee.currentStatus}
-            ></Form.Check>
+              defaultChecked={this.state.employee.currentStatus}></Form.Check>
 
             <Form.Check
               type="radio"
@@ -333,11 +327,14 @@ class EmployeeUpdate extends Component {
               name="currentStatus"
               value={false}
               label="Retired"
-              checked={!this.state.employee.currentStatus}
-            ></Form.Check>
+              defaultChecked={!this.state.employee.currentStatus}></Form.Check>
           </Form.Group>
 
           <div className="btn-add">
+            <Link to="/employees" className="btn btn-warning px-4 mr-3">
+              Cancel
+            </Link>
+
             <button className="btn btn-dark px-4">Update</button>
           </div>
         </Form>
@@ -346,4 +343,4 @@ class EmployeeUpdate extends Component {
   }
 }
 
-export default EmployeeUpdate;
+export default withRouter(EmployeeUpdate);

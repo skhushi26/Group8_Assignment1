@@ -1,6 +1,8 @@
 import { Component } from "react";
 import { Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import withRouter from "./Router/withRouter";
+import { Link } from "react-router-dom";
 
 class EmployeeCreate extends Component {
   constructor() {
@@ -31,7 +33,7 @@ class EmployeeCreate extends Component {
           const result = await res.json();
           toast.success(result.message);
           form.reset();
-          this.props.history.push(`/employees/${employee.employeeType}`);
+          this.props.history(`/employees/${employee.employeeType}`);
         } else {
           res.json().catch((err) => {
             toast.error(err.message);
@@ -83,7 +85,8 @@ class EmployeeCreate extends Component {
     if (!dateOfJoining) {
       errors.dateOfJoining = "Date of joining is required.";
     } else if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOfJoining)) {
-      errors.dateOfJoining = "Date of joining should be in the format 'YYYY-MM-DD'.";
+      errors.dateOfJoining =
+        "Date of joining should be in the format 'YYYY-MM-DD'.";
     } else {
       const parts = dateOfJoining.split("-");
       const year = parseInt(parts[0], 10);
@@ -118,7 +121,6 @@ class EmployeeCreate extends Component {
       this.setState({ errors });
       return;
     }
-    // console.log("form: ", form.dateOfJoining.value);
     const employee = {
       firstName: form.firstName.value,
       lastName: form.lastName.value,
@@ -129,7 +131,6 @@ class EmployeeCreate extends Component {
       employeeType: form.employeeType.value,
       currentStatus: form.currentStatus.value === "true",
     };
-    // console.log("employee: ", employee);
     this.employeeAdd(employee, form);
   };
 
@@ -147,7 +148,10 @@ class EmployeeCreate extends Component {
     const { errors } = this.state;
     return (
       <div>
-        <Form name="employeeAdd" onSubmit={this.handleSubmit} className="employee-create-form my-3">
+        <Form
+          name="employeeAdd"
+          onSubmit={this.handleSubmit}
+          className="employee-create-form my-3">
           <Form.Group controlId="formFirstName">
             <Form.Control
               type="text"
@@ -156,7 +160,9 @@ class EmployeeCreate extends Component {
               onChange={this.handleChange}
               isInvalid={!!errors.firstName}
             />
-            <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.firstName}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -167,7 +173,9 @@ class EmployeeCreate extends Component {
               onChange={this.handleChange}
               isInvalid={!!errors.lastName}
             />
-            <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.lastName}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -178,7 +186,9 @@ class EmployeeCreate extends Component {
               onChange={this.handleChange}
               isInvalid={!!errors.age}
             />
-            <Form.Control.Feedback type="invalid">{errors.age}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.age}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -188,7 +198,9 @@ class EmployeeCreate extends Component {
               onChange={this.handleChange}
               isInvalid={!!errors.dateOfJoining}
             />
-            <Form.Control.Feedback type="invalid">{errors.dateOfJoining}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.dateOfJoining}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -196,15 +208,16 @@ class EmployeeCreate extends Component {
               as="select"
               name="title"
               onChange={this.handleChange}
-              isInvalid={!!errors.title}
-            >
+              isInvalid={!!errors.title}>
               <option value="">Select Title</option>
               <option value="Employee">Employee</option>
               <option value="Manager">Manager</option>
               <option value="Director">Director</option>
               <option value="VP">VP</option>
             </Form.Control>
-            <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.title}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -212,15 +225,16 @@ class EmployeeCreate extends Component {
               as="select"
               name="department"
               onChange={this.handleChange}
-              isInvalid={!!errors.department}
-            >
+              isInvalid={!!errors.department}>
               <option value="">Select Department</option>
               <option value="IT">IT</option>
               <option value="Marketing">Marketing</option>
               <option value="HR">HR</option>
               <option value="Engineering">Engineering</option>
             </Form.Control>
-            <Form.Control.Feedback type="invalid">{errors.department}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.department}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group controlId="formFirstName">
@@ -228,15 +242,16 @@ class EmployeeCreate extends Component {
               as="select"
               name="employeeType"
               onChange={this.handleChange}
-              isInvalid={!!errors.employeeType}
-            >
+              isInvalid={!!errors.employeeType}>
               <option value="">Select Employee Type</option>
               <option value="FullTime">FullTime</option>
               <option value="PartTime">PartTime</option>
               <option value="Contract">Contract</option>
               <option value="Seasonal">Seasonal</option>
             </Form.Control>
-            <Form.Control.Feedback type="invalid">{errors.employeeType}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {errors.employeeType}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Form.Group className="employee-radio-btn">
@@ -246,21 +261,21 @@ class EmployeeCreate extends Component {
               name="currentStatus"
               value={true}
               label="Working"
-              checked
-            ></Form.Check>
-            {/* <Form.Label for="working">Working</Form.Label> */}
+              defaultChecked></Form.Check>
 
             <Form.Check
               type="radio"
               id="retired"
               name="currentStatus"
               value={false}
-              label="Retired"
-            ></Form.Check>
-            {/* <Form.Label for="retired">Retired</Form.Label> */}
+              label="Retired"></Form.Check>
           </Form.Group>
 
           <div className="btn-add">
+            <Link to="/employees" className="btn btn-warning px-4 mr-3">
+              Cancel
+            </Link>
+
             <button className="btn btn-dark px-4">Add</button>
           </div>
         </Form>
@@ -269,4 +284,4 @@ class EmployeeCreate extends Component {
   }
 }
 
-export default EmployeeCreate;
+export default withRouter(EmployeeCreate);

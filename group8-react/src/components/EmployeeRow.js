@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import moment from "moment";
 import { Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 class EmployeeRow extends Component {
   constructor() {
@@ -33,9 +34,9 @@ class EmployeeRow extends Component {
           <Button variant="danger" onClick={this.handleDelete} className="mr-1">
             Delete
           </Button>
-          <Button variant="info" onClick={this.handleView} className="mr-1">
-            View
-          </Button>
+          <Link to={`/employee/view/${this.props.employee._id}`} className="mr-1">
+            <Button variant="info">View</Button>
+          </Link>
           <Button as="a" variant="primary" href={`/employee/update/${this.props.employee._id}`}>
             Edit
           </Button>

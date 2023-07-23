@@ -1,20 +1,24 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import EmployeeTable from "../EmployeeTable";
 import EmployeeCreate from "../EmployeeCreate";
 import Navbar from "../Navigation";
 import EmployeeUpdate from "../EmployeeUpdate";
+import NotFound from "../NotFound";
+import EmployeeView from "../EmployeeView";
 
 export default function Routing() {
   return (
-    <Router>
-      <Navbar />
-      <Switch>
-        <Redirect exact from="/" to="/employees" />
-        <Route path="/employees/:type?" component={EmployeeTable} />
-        <Route path="/employee/create" component={EmployeeCreate} />
-        <Route path="/employee/update/:id" component={EmployeeUpdate} />
-      </Switch>
-    </Router>
+    <>
+      <Routes>
+        <Route path="/" element={<Navbar />}>
+          <Route path="/employees/:type?" element={<EmployeeTable />} />
+          <Route path="/employee/create" element={<EmployeeCreate />} />
+          <Route path="/employee/update/:id" element={<EmployeeUpdate />} />
+          <Route path="/employee/view/:id" element={<EmployeeView />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </>
   );
 }

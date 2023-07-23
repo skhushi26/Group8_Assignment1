@@ -4,7 +4,7 @@ import { Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 import EmployeeSearch from "./EmployeeSearch";
 import DeleteModal from "./DeleteModal";
-import ViewModal from "./ViewModal";
+import withRouter from "./Router/withRouter";
 
 class EmployeeTable extends Component {
   constructor() {
@@ -12,7 +12,6 @@ class EmployeeTable extends Component {
     this.state = {
       employees: [],
       isDeleteModalOpen: false,
-      isViewModalOpen: false,
       selectedEmployee: "",
       employee: {},
     };
@@ -20,7 +19,7 @@ class EmployeeTable extends Component {
 
   async loadData(employeeType) {
     try {
-      this.props.history.replace(`/employees/${employeeType}`);
+      this.props.history(`/employees/${employeeType}`, { replace: true });
       const query = `
         query {
           employeeList(employeeType: "${employeeType}") {
@@ -55,7 +54,6 @@ class EmployeeTable extends Component {
       }
 
       this.setState({ employees: result.data.employeeList });
-      toast.success("Employees found successfully!");
     } catch (error) {
       toast.error("Something went wrong in fetching employees!");
       console.log("Error:", error.message);
@@ -63,7 +61,7 @@ class EmployeeTable extends Component {
   }
 
   componentWillMount() {
-    this.loadData(this.props.match.params.type || "All"); // Load all employees by default
+    this.loadData(this?.props?.params?.type || "All"); // Load all employees by default
   }
 
   handleEmployeeTypeChange = (employeeType) => {
@@ -72,10 +70,13 @@ class EmployeeTable extends Component {
 
   deleteEmployee = async () => {
     try {
-      const response = await fetch(`/api/employees/${this.state.selectedEmployee}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `/api/employees/${this.state.selectedEmployee}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       if (!response.ok) {
         toast.error("Request failed with status: " + response.status);
@@ -91,9 +92,11 @@ class EmployeeTable extends Component {
 
       toast.success("Employee deleted successfully!");
       this.setState({ isDeleteModalOpen: false, selectedEmployee: "" });
-      this.loadData(this.props.match.params.type || "All");
+      this.loadData(this?.props?.params?.type || "All");
     } catch (error) {
-      toast.error("Something went wrong while deleting the employee. Please try again!");
+      toast.error(
+        "Something went wrong while deleting the employee. Please try again!"
+      );
       console.log("Error:", error.message);
       this.setState({ isDeleteModalOpen: false, selectedEmployee: "" });
       throw error;
@@ -104,12 +107,8 @@ class EmployeeTable extends Component {
     this.setState({ isDeleteModalOpen: true, selectedEmployee: id });
   };
 
-  handleViewModal = (employee) => {
-    this.setState({ isViewModalOpen: true, employee: employee });
-  };
-
   handleCloseModal = () => {
-    this.setState({ isDeleteModalOpen: false, isViewModalOpen: false, selectedEmployee: "" });
+    this.setState({ isDeleteModalOpen: false, selectedEmployee: "" });
   };
 
   render() {
@@ -119,7 +118,6 @@ class EmployeeTable extends Component {
           key={employee._id}
           employee={employee}
           handleDeleteModal={this.handleDeleteModal}
-          handleViewModal={this.handleViewModal}
         />
       );
     });
@@ -128,7 +126,7 @@ class EmployeeTable extends Component {
       <div className="container mt-4">
         <EmployeeSearch
           handleEmployeeTypeChange={this.handleEmployeeTypeChange}
-          defaultType={this.props.match.params.type || "All"}
+          defaultType={this.props?.params?.type || "All"}
         />
         <Table striped bordered hover>
           <thead>
@@ -143,7 +141,17 @@ class EmployeeTable extends Component {
               <th>Current Status</th>
             </tr>
           </thead>
-          <tbody>{employees}</tbody>
+          <tbody>
+            {employees.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="text-center">
+                  No employees found!
+                </td>
+              </tr>
+            ) : (
+              employees
+            )}
+          </tbody>
         </Table>
 
         <DeleteModal
@@ -151,15 +159,9 @@ class EmployeeTable extends Component {
           handleOkay={this.deleteEmployee}
           handleCloseModal={this.handleCloseModal}
         />
-        <ViewModal
-          flag={this.state.isViewModalOpen}
-          handleOkay={this.handleCloseModal}
-          handleCloseModal={this.handleCloseModal}
-          employee={this.state.employee}
-        />
       </div>
     );
   }
 }
 
-export default EmployeeTable;
+export default withRouter(EmployeeTable);

@@ -5,7 +5,7 @@
  *          Gurpreet Singh
  *
  * Group 8 - Node Server
- * Assignment 1 - PROG8730-23S-Sec8-Advanced Full-Stack Programming
+ * Assignment 2 - PROG8730-23S-Sec8-Advanced Full-Stack Programming
  */
 
 import express from "express";
@@ -90,7 +90,6 @@ app.post("/api/employees", (req, res) => {
 app.put("/api/employees/:id", (req, res) => {
   const employeeId = req.params.id;
   const employeeData = req.body;
-  console.log("From api: ", employeeId, employeeData);
   employeeSchema
     .validate(employeeData, { abortEarly: false })
     .then(() => {
@@ -120,7 +119,6 @@ app.put("/api/employees/:id", (req, res) => {
 
 app.delete("/api/employees/:id", (req, res) => {
   const employeeId = req.params.id;
-  console.log("employeeId", employeeId);
   deleteEmployee(null, { employeeId })
     .then((deletedEmployee) => {
       res
@@ -178,7 +176,6 @@ const GraphQlDateTypeResolver = new GraphQLScalarType({
 
 const employeeList = async (_root, { employeeType }) => {
   let query = {};
-  console.log("employeeType: ", employeeType);
   if (employeeType && employeeType !== "All") {
     query = { employeeType };
   }
@@ -192,7 +189,6 @@ const createEmployee = async (_root, { employee }) => {
 };
 
 const updateEmployee = async (_root, { employeeId, employee }) => {
-  console.log("In functionL ", employeeId, employee);
   await db
     .collection("employees")
     .updateOne({ _id: new ObjectId(employeeId) }, { $set: { ...employee } });
@@ -200,7 +196,6 @@ const updateEmployee = async (_root, { employeeId, employee }) => {
 };
 
 const deleteEmployee = async (_root, { employeeId }) => {
-  console.log("employeeId in deleteeee", employeeId);
   const deletedEmployee = await db
     .collection("employees")
     .findOneAndDelete({ _id: new ObjectId(employeeId) });
